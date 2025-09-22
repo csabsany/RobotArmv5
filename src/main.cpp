@@ -4,30 +4,13 @@
 #include <ESP32Servo.h>
 #include <SPIFFS.h>
 #include <FastLED.h>
-
-#define LED_PIN 21
-#define NUM_LEDS 3
-#define LED_TYPE WS2812B
-#define COLOR_ORDER GRB
+#include <pins.h>
 
 CRGB leds[NUM_LEDS];
 
 // AP beállítások
 const char* ssid = "Robotarm";
 const char* password = "u6x48nmgu";
-
-// Stepper motorok 
-const int dirPins[3] = {2, 13, 11};
-const int stepPins[3] = {1, 14, 12};
-const int MOTOR_RESET = 39;
-
-// Végálláskapcsolók
-const int LSwitch1 = 42; 
-const int LSwitch2 = 41; 
-const int LSwitch3 = 40; 
-
-// Szervó motor (gripper)
-const int gripperPin = 38;
 
 Servo gripperServo;
 WebServer server(80);
@@ -49,37 +32,23 @@ void LED_Update(String state, int motorIndex = -1)
   FastLED.show();
 }
 
-// Webes részek kezelése - START
-void handleRoot() {
-  File file = SPIFFS.open("/index.html", "r");
+
+// SPIFFS handler
+void handleFile(const char* path, const char* mime) {
+  File file = SPIFFS.open(path, "r");
   if (!file) {
-    server.send(500, "text/plain", "index.html not found");
+    server.send(500, "text/plain", String(path) + " not found");
     return;
   }
-  server.streamFile(file, "text/html");
+  server.streamFile(file, mime);
   file.close();
 }
 
-void handleScript() {
-  File file = SPIFFS.open("/script.js", "r");
-  if (!file) {
-    server.send(500, "text/plain", "script.js not found");
-    return;
-  }
-  server.streamFile(file, "application/javascript");
-  file.close();
-}
+// Webes handler-ek
+void handleRoot()    { handleFile("/index.html", "text/html"); }
+void handleScript()  { handleFile("/script.js", "application/javascript"); }
+void handleStyle()   { handleFile("/style.css", "text/css"); }
 
-void handleStyle() {
-  File file = SPIFFS.open("/style.css", "r");
-  if (!file) {
-    server.send(500, "text/plain", "style.css not found");
-    return;
-  }
-  server.streamFile(file, "text/css");
-  file.close();
-}
-// Webes részek kezelése - END
 
 // Motorok kezelése - START
 void handleServo() {
@@ -124,16 +93,16 @@ void InitLeds()
 void setup() {
   Serial.begin(115200);
 
-  pinMode(LSwitch1, INPUT_PULLUP);
-  pinMode(LSwitch2, INPUT_PULLUP);
-  pinMode(LSwitch3, INPUT_PULLUP);
+  pinMode(LSwitch[1], INPUT_PULLUP);
+  pinMode(LSwitch[2], INPUT_PULLUP);
+  pinMode(LSwitch[3], INPUT_PULLUP);
 
   for (int i = 0; i < 3; i++) {
     pinMode(stepPins[i], OUTPUT);
     pinMode(dirPins[i], OUTPUT);
   }
 
-  gripperServo.attach(gripperPin);
+  gripperServo.attach(GRIPPER_PIN);
   gripperServo.write(0);
   delay(1000);
 
@@ -168,7 +137,7 @@ void loop() {
 
 if (motorDirection == "m1_left") 
 {
-  if (digitalRead(LSwitch2) == HIGH) // NINCS benyomva, lehet léptetni
+  if (digitalRead(LSwitch[2]) == HIGH) // NINCS benyomva, lehet léptetni
   {
     moveMotor(0, false);
     LED_Update("moving", 0);
@@ -188,7 +157,7 @@ else if (motorDirection == "m1_right")
 } 
 else if (motorDirection == "m2_forward") 
 {
-  if (digitalRead(LSwitch1) == HIGH) // NINCS benyomva, lehet léptetni
+  if (digitalRead(LSwitch[1]) == HIGH) // NINCS benyomva, lehet léptetni
   {
     moveMotor(1, true);
     LED_Update("moving", 1);
@@ -208,7 +177,7 @@ else if (motorDirection == "m2_backward")
 } 
 else if (motorDirection == "m3_diag1") 
 {
-  if (digitalRead(LSwitch3) == HIGH) // NINCS benyomva, lehet léptetni
+  if (digitalRead(LSwitch[3]) == HIGH) // NINCS benyomva, lehet léptetni
   {
     moveMotor(2, false);
     LED_Update("moving", 2);
