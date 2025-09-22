@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Robotkar vezérlés</title>
+  <link rel="stylesheet" type="text/css" href="/style.css" />
+</head>
+<body>
+  <h2>Motor 1 – Jobbra / Balra</h2>
+  <div class="control-grid motor-section">
+    <button id="m1-left">←</button>
+    <div></div>
+    <button id="m1-right">→</button>
+  </div>
+
+  <h2>Motor 2 – Fel / Le</h2>
+  <div class="control-grid motor-section">
+    <div></div>
+    <button id="m2-forward">↑</button>
+    <div></div>
+    <div></div>
+    <button id="m2-backward">↓</button>
+    <div></div>
+  </div>
+
+  <h2>Motor 3 – Bólogat fel / Bólogat le</h2>
+  <div class="control-grid motor-section">
+    <button id="m3-diag1">↖</button>
+    <div></div>
+    <button id="m3-diag2">↘</button>
+  </div>
+
+  <h2>Megfogó vezérlés</h2>
+  <div class="control-grid motor-section">
+    <button id="grip-open">Nyit</button>
+    <div></div>
+    <button id="grip-close">Zár</button>
+  </div>
+<script src='/script.js'></script>
+</body>
+</html>

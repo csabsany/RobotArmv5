@@ -1,0 +1,35 @@
+
+body {
+  font-family: sans-serif;
+  text-align: center;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 20px;
+  user-select: none;
+}
+h2 {
+  margin-bottom: 10px;
+}
+.motor-section {
+  margin-bottom: 30px;
+}
+.control-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 80px);
+  grid-gap: 10px;
+  justify-content: center;
+}
+button {
+  font-size: 24px;
+  padding: 20px;
+  border: none;
+  border-radius: 10px;
+  background-color: #007bff;
+  color: white;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
+  user-select: none;
+}
+button:active {
+  background-color: #0056b3;
+}
