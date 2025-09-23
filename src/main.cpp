@@ -71,7 +71,7 @@ void handleServo() {
   server.send(200, "text/plain", "OK");
 }
 
-void moveMotor(int motorIndex, bool forward) {
+void handleStepper(int motorIndex, bool forward) {
   digitalWrite(dirPins[motorIndex], forward ? HIGH : LOW);
   digitalWrite(stepPins[motorIndex], HIGH);
   delayMicroseconds(1000);
@@ -139,7 +139,7 @@ if (motorDirection == "m1_left")
 {
   if (digitalRead(LSwitch[2]) == HIGH) // NINCS benyomva, lehet léptetni
   {
-    moveMotor(0, false);
+    handleStepper(0, false);
     LED_Update("moving", 0);
     isMoving = true;
   }
@@ -151,7 +151,7 @@ if (motorDirection == "m1_left")
 } 
 else if (motorDirection == "m1_right") 
 {
-  moveMotor(0, true);
+  handleStepper(0, true);
   LED_Update("moving", 0);
   isMoving = true;
 } 
@@ -159,7 +159,7 @@ else if (motorDirection == "m2_forward")
 {
   if (digitalRead(LSwitch[1]) == HIGH) // NINCS benyomva, lehet léptetni
   {
-    moveMotor(1, true);
+    handleStepper(1, true);
     LED_Update("moving", 1);
     isMoving = true;
   }
@@ -171,7 +171,7 @@ else if (motorDirection == "m2_forward")
 } 
 else if (motorDirection == "m2_backward") 
 {
-  moveMotor(1, false);
+  handleStepper(1, false);
   LED_Update("moving", 1);
   isMoving = true;
 } 
@@ -179,7 +179,7 @@ else if (motorDirection == "m3_diag1")
 {
   if (digitalRead(LSwitch[3]) == HIGH) // NINCS benyomva, lehet léptetni
   {
-    moveMotor(2, false);
+    handleStepper(2, false);
     LED_Update("moving", 2);
     isMoving = true;
   }
@@ -191,7 +191,7 @@ else if (motorDirection == "m3_diag1")
 } 
 else if (motorDirection == "m3_diag2") 
 {
-  moveMotor(2, true);
+  handleStepper(2, true);
   LED_Update("moving", 2);
   isMoving = true;
 } 
