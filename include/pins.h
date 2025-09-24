@@ -9,11 +9,11 @@
 
 // Stepper motorok
 #define MOTOR_COUNT     3
-const int dirPins[MOTOR_COUNT]  = {2, 13, 11};
-const int stepPins[MOTOR_COUNT] = {1, 14, 12};
+const int dirPins[MOTOR_COUNT]  = {11, 2, 13};
+const int stepPins[MOTOR_COUNT] = {12, 1, 14};
 #define MOTOR_RESET     39
 
-// Végálláskapcsolók
+// Végálláskapcsolók+
 const int LSwitch[MOTOR_COUNT] = {42, 41, 40};
 
 // Szervó motor (gripper)
