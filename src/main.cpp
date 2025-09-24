@@ -61,7 +61,7 @@ void handleServo() {
 
     if (motorDirection == open) 
     {
-      gripperServo.write(90); // Nyitás
+      gripperServo.write(70); // Nyitás
     } 
     else if (motorDirection == close) 
     {

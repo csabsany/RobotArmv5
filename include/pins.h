@@ -19,3 +19,7 @@ const int LSwitch[MOTOR_COUNT] = {42, 41, 40};
 // Szervó motor (gripper)
 #define GRIPPER_PIN     38
 #endif // PINS_H
+
+// SX1 -> CN4 -> 42
+// SX2 -> CN5 -> 41
+// SX3 -> CN6 -> 40
