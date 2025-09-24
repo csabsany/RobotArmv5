@@ -21,17 +21,20 @@ void LED_Update(String state, int motorIndex = -1)
 {
   for (int i = 0; i < NUM_LEDS; ++i) 
   {
-    leds[i] = CRGB::White; //készenlét
+    leds[i] = CRGB::White; // készenlét
   }
 
   if (state == "moving" && motorIndex >= 0 && motorIndex < NUM_LEDS) 
   {
-    leds[motorIndex] = CRGB::Green; //Az éppen mozgó motor színe
+    leds[motorIndex] = CRGB::Green; // mozgás
+  }
+  else if (state == "limit" && motorIndex >= 0 && motorIndex < NUM_LEDS)
+  {
+    leds[motorIndex] = CRGB::Red; // végállás
   }
 
   FastLED.show();
 }
-
 
 // SPIFFS handler
 void handleFile(const char* path, const char* mime) {
@@ -48,7 +51,6 @@ void handleFile(const char* path, const char* mime) {
 void handleRoot()    { handleFile("/index.html", "text/html"); }
 void handleScript()  { handleFile("/script.js", "application/javascript"); }
 void handleStyle()   { handleFile("/style.css", "text/css"); }
-
 
 // Motorok kezelése - START
 void handleServo() {
@@ -80,12 +82,11 @@ void handleStepper(int motorIndex, bool forward) {
 }
 // Motorok kezelése - END
 
-
 // Ledek kezelése
 void InitLeds()
 {
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS);
-  FastLED.setBrightness(10); //LED fényerő csökkentés
+  FastLED.setBrightness(10); // LED fényerő csökkentés
   FastLED.clear();
   FastLED.show();
 }
@@ -133,67 +134,68 @@ void loop() {
 
   bool isMoving = false;
 
-  
+// TEST CODE
 
-if (motorDirection == "m1_left") 
-{
-  if (digitalRead(LSwitch[2]) == HIGH) // NINCS benyomva, lehet léptetni
+// Serial.print("LSwitch[3]: ");
+// Serial.println(digitalRead(LSwitch[3]));
+// delay(1000);
+
+
+  if (motorDirection == "m1_left") 
   {
-    handleStepper(0, false);
+    if (digitalRead(LSwitch[2]) == HIGH) 
+    {
+      handleStepper(0, false);
+      LED_Update("moving", 0);
+      isMoving = true;
+    }
+    else
+    {
+      LED_Update("limit", 0);
+    }
+  } 
+  else if (motorDirection == "m1_right") 
+  {
+    handleStepper(0, true);
     LED_Update("moving", 0);
     isMoving = true;
-  }
-  else
+  } 
+  else if (motorDirection == "m2_forward") 
   {
-    LED_Update("ready");
-    //motorDirection = "stop";
-  }
-} 
-else if (motorDirection == "m1_right") 
-{
-  handleStepper(0, true);
-  LED_Update("moving", 0);
-  isMoving = true;
-} 
-else if (motorDirection == "m2_forward") 
-{
-  handleStepper(1, true);
-  LED_Update("moving", 1);
-  isMoving = true;
-} 
-else if (motorDirection == "m2_backward") 
-{
-  if (digitalRead(LSwitch[3]) == HIGH)
-  {
-    handleStepper(1, false);
+    handleStepper(1, true);
     LED_Update("moving", 1);
     isMoving = true;
-  }
-  else
+  } 
+  else if (motorDirection == "m2_backward") 
   {
-    LED_Update("ready");
-    //motorDirection = "stop";
+    if (digitalRead(LSwitch[3]) == HIGH)
+    {
+      handleStepper(1, false);
+      LED_Update("moving", 1);
+      isMoving = true;
+    }
+    else
+    {
+      LED_Update("limit", 1);
+    }
   }
-}
-else if (motorDirection == "m3_diag1") 
-{
-  handleStepper(2, true);
-  LED_Update("moving", 2);
-  isMoving = true;
-}
-else if (motorDirection == "m3_diag2") 
-{
-  if (digitalRead(LSwitch[1]) == HIGH) // csak itt van limit kapcsoló
+  else if (motorDirection == "m3_diag2") 
+  {
+    if (digitalRead(LSwitch[1]) == HIGH) 
+    {
+      handleStepper(2, true);
+      LED_Update("moving", 2);
+      isMoving = true;
+    }
+    else
+    {
+      LED_Update("limit", 2);
+    }
+  }
+  else if (motorDirection == "m3_diag1") 
   {
     handleStepper(2, false);
     LED_Update("moving", 2);
     isMoving = true;
   }
-  else
-  {
-    LED_Update("ready");
-    //motorDirection = "stop";
-  }
-}
-
 }
