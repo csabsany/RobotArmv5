@@ -1,3 +1,4 @@
+
 body {
   font-family: sans-serif;
   text-align: center;
@@ -5,29 +6,7 @@ body {
   margin: 0;
   padding: 20px;
   user-select: none;
-  /* Háttérkép beállítása a data mappából */
-  background: url('data\EvoBPSzekhaz.jpg') no-repeat center center fixed;
-  background-size: cover;
-  position: relative;
 }
-
-/* Áttűnő réteg a háttérkép fölé */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: inherit;
-  opacity: 0.15; /* Áttűnés mértéke */
-  z-index: 0;
-  pointer-events: none;
-}
-
-/* Tartalom mindig a háttér fölött legyen */
-.motor-section, h2, button {
-  position: relative;
-  z-index: 1;
-}
-
 h2 {
   margin-bottom: 10px;
 }
@@ -50,7 +29,6 @@ button {
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
   cursor: pointer;
   user-select: none;
-  transition: background 0.2s;
 }
 button:active {
   background-color: #0056b3;

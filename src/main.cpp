@@ -96,7 +96,7 @@ void setup() {
 
   pinMode(LSwitch[1], INPUT_PULLUP);
   pinMode(LSwitch[2], INPUT_PULLUP);
-  pinMode(LSwitch[3], INPUT_PULLUP);
+  pinMode(LSwitch[0], INPUT_PULLUP);
 
   for (int i = 0; i < 3; i++) {
     pinMode(stepPins[i], OUTPUT);
@@ -160,17 +160,17 @@ void loop() {
     LED_Update("moving", 0);
     isMoving = true;
   } 
-  else if (motorDirection == "m2_forward") 
+  else if (motorDirection == "m2_backward") 
   {
-    handleStepper(1, true);
+    handleStepper(1, false);
     LED_Update("moving", 1);
     isMoving = true;
   } 
-  else if (motorDirection == "m2_backward") 
+  else if (motorDirection == "m2_forward") 
   {
-    if (digitalRead(LSwitch[3]) == HIGH)
+    if (digitalRead(LSwitch[0]) == HIGH)
     {
-      handleStepper(1, false);
+      handleStepper(1, true);
       LED_Update("moving", 1);
       isMoving = true;
     }
@@ -183,7 +183,7 @@ void loop() {
   {
     if (digitalRead(LSwitch[1]) == HIGH) 
     {
-      handleStepper(2, true);
+      handleStepper(2, false);
       LED_Update("moving", 2);
       isMoving = true;
     }
@@ -194,7 +194,7 @@ void loop() {
   }
   else if (motorDirection == "m3_diag1") 
   {
-    handleStepper(2, false);
+    handleStepper(2, true);
     LED_Update("moving", 2);
     isMoving = true;
   }
