@@ -8,9 +8,7 @@
 
 CRGB leds[NUM_LEDS];
 
-// AP beállítások
-const char* ssid = "Robotarm";
-const char* password = "u6x48nmgu";
+const char* WifiPassword = "evosoft2025"; // Legalább 8 karakter hosszú jelszó
 
 Servo gripperServo;
 WebServer server(80);
@@ -91,6 +89,30 @@ void InitLeds()
   FastLED.show();
 }
 
+void Wifi_Init() {
+  WiFi.mode(WIFI_AP); // Access Point mód
+ 
+  // Teljes MAC-cím lekérdezése
+  String mac = WiFi.macAddress();
+  mac.replace(":", ""); // Eltávolítja az esetleges kettőspontokat
+  String macSuffix = mac.substring(mac.length() - 4); // Utolsó 4 karakter
+ 
+  int channel = random(1, 14); // Véletlenszerű csatorna 1-13 között
+ 
+  // SSID generálása
+  String ssid = "Robot_" + macSuffix;  
+ 
+  if (WiFi.softAP(ssid.c_str(), WifiPassword, channel)) {
+    Serial.println("Access Point létrehozva:");
+    Serial.print("SSID: ");
+    Serial.println(ssid);
+    Serial.print("IP cím: ");
+    Serial.println(WiFi.softAPIP());
+  } else {
+    Serial.println("Access Point létrehozása sikertelen!");
+  }
+}
+
 void setup() {
   Serial.begin(115200);
 
@@ -107,11 +129,7 @@ void setup() {
   gripperServo.write(0);
   delay(1000);
 
-  WiFi.softAP(ssid, password);
-  IPAddress IP = WiFi.softAPIP();
-  Serial.println("[SYSTEM] Access Point létrehozva");
-  Serial.print("[SYSTEM] IP cím: ");
-  Serial.println(IP);
+  Wifi_Init();
 
   if (!SPIFFS.begin(true)) {
     Serial.println("[ERROR] SPIFFS inicializálása sikertelen");
@@ -133,13 +151,6 @@ void loop() {
   server.handleClient();
 
   bool isMoving = false;
-
-// TEST CODE
-
-// Serial.print("LSwitch[3]: ");
-// Serial.println(digitalRead(LSwitch[3]));
-// delay(1000);
-
 
   if (motorDirection == "m1_left") 
   {
