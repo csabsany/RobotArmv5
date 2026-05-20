@@ -8,7 +8,7 @@
 
 CRGB leds[NUM_LEDS];
 
-const char* WifiPassword = "evosoft2025"; // Legalább 8 karakter hosszú jelszó
+const char* WifiPassword = "evosoft2026"; // Legalább 8 karakter hosszú jelszó
 
 Servo gripperServo;
 WebServer server(80);
@@ -49,6 +49,16 @@ void handleFile(const char* path, const char* mime) {
 void handleRoot()    { handleFile("/index.html", "text/html"); }
 void handleScript()  { handleFile("/script.js", "application/javascript"); }
 void handleStyle()   { handleFile("/style.css", "text/css"); }
+
+// Teszt endpoint SPIFFS nélkül
+void handleTest() {
+  String html = "<html><body><h1>Robot Arm Webserver</h1>";
+  html += "<p>WiFi SSID: Robot_1400</p>";
+  html += "<p>IP: " + WiFi.softAPIP().toString() + "</p>";
+  html += "<p>Webszerver mukodik!</p>";
+  html += "</body></html>";
+  server.send(200, "text/html", html);
+}
 
 // Motorok kezelése - START
 void handleServo() {
@@ -115,6 +125,9 @@ void Wifi_Init() {
 
 void setup() {
   Serial.begin(115200);
+  delay(3000); // Hosszabb várakozás USB-CDC kapcsolatra
+  Serial.println("\n\n=== ESP32 Robot Arm Starting ===");
+  Serial.flush();
 
   pinMode(LSwitch[1], INPUT_PULLUP);
   pinMode(LSwitch[2], INPUT_PULLUP);
@@ -133,13 +146,29 @@ void setup() {
 
   if (!SPIFFS.begin(true)) {
     Serial.println("[ERROR] SPIFFS inicializálása sikertelen");
-    return;
+    // Ne térjünk vissza, hadd induljon el a webszerver
+  } else {
+    Serial.println("[OK] SPIFFS inicializálva");
+    
+    // SPIFFS fájlok listázása debug célra
+    Serial.println("[SPIFFS] Fájlok listája:");
+    File root = SPIFFS.open("/");
+    File file = root.openNextFile();
+    while(file) {
+      Serial.print("  - ");
+      Serial.print(file.name());
+      Serial.print(" (");
+      Serial.print(file.size());
+      Serial.println(" bytes)");
+      file = root.openNextFile();
+    }
   }
 
   // LED inicializálás
   InitLeds();
   
   server.on("/", handleRoot);
+  server.on("/test", handleTest);
   server.on("/script.js", handleScript);
   server.on("/style.css", handleStyle);
   server.on("/move", handleServo);
