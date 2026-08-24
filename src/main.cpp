@@ -202,15 +202,9 @@ void loop() {
   } 
   else if (motorDirection == "m2_backward") 
   {
-    handleStepper(1, false);
-    LED_Update("moving", 1);
-    isMoving = true;
-  } 
-  else if (motorDirection == "m2_forward") 
-  {
-    if (digitalRead(LSwitch[0]) == HIGH)
+    if (digitalRead(LSwitch[1]) == HIGH)
     {
-      handleStepper(1, true);
+      handleStepper(1, false);
       LED_Update("moving", 1);
       isMoving = true;
     }
@@ -218,12 +212,24 @@ void loop() {
     {
       LED_Update("limit", 1);
     }
+  } 
+  else if (motorDirection == "m2_forward") 
+  {
+    handleStepper(1, true);
+    LED_Update("moving", 1);
+    isMoving = true;
   }
   else if (motorDirection == "m3_diag2") 
   {
-    if (digitalRead(LSwitch[1]) == HIGH) 
+    handleStepper(2, false);
+    LED_Update("moving", 2);
+    isMoving = true;
+  }
+  else if (motorDirection == "m3_diag1") 
+  {
+    if (digitalRead(LSwitch[0]) == HIGH) 
     {
-      handleStepper(2, false);
+      handleStepper(2, true);
       LED_Update("moving", 2);
       isMoving = true;
     }
@@ -231,11 +237,5 @@ void loop() {
     {
       LED_Update("limit", 2);
     }
-  }
-  else if (motorDirection == "m3_diag1") 
-  {
-    handleStepper(2, true);
-    LED_Update("moving", 2);
-    isMoving = true;
   }
 }
